@@ -2,14 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Reveal from '@/components/Reveal';
+import Eyebrow from '@/components/Eyebrow';
+import PlusMarks from '@/components/PlusMarks';
+import DitheredOrbit from '@/components/DitheredOrbit';
 import { stats } from '@/lib/content/stats';
 
-// Scroll-linked progress bar. As the row scrolls up through the viewport,
-// `progress` interpolates 0 → 1; the bar (outer dark pill + glassy inner)
-// grows from width 0 to the FULL row width in lockstep. All four rows
-// share the same max width — only the scroll progress varies the visible
-// extent. Matches the Figma play-mode behaviour where the bar's width is
-// tweened with the scroll position.
+// Scroll-linked progress bar. Bar width grows from 0 → 100% as the row
+// passes through the comfortable viewport band.
 function StatBar() {
   const ref = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState(0);
@@ -22,11 +21,6 @@ function StatBar() {
     const update = () => {
       const rect = node.getBoundingClientRect();
       const vh = window.innerHeight || document.documentElement.clientHeight;
-      // Progress mapping:
-      //   bar centre at 90% of viewport height → progress 0  (just entered bottom)
-      //   bar centre at 45% of viewport height → progress 1  (comfortably in view)
-      // Using the centre, not the top, so the fill peaks when the row is
-      // optically centred in the viewport.
       const centre = rect.top + rect.height / 2;
       const start = vh * 0.9;
       const end = vh * 0.45;
@@ -50,11 +44,6 @@ function StatBar() {
     };
   }, []);
 
-  // Outer pill width grows from 0 → 100% as scroll progresses. The inner
-  // glass is absolutely positioned with edge insets (top/bottom 6px, left/
-  // right 8px), so it follows the outer's growth automatically — at outer
-  // width 0 it collapses to nothing, at outer width 100% it sits as a
-  // glassy chrome inside the dark pill, exactly matching the Figma layers.
   const outerWidthPct = progress * 100;
 
   return (
@@ -73,10 +62,6 @@ function StatBar() {
           willChange: 'width',
         }}
       >
-        {/* Inner glassy pill — anchored to outer's inset edges so it grows
-            in lockstep with the outer. At outer-width 0 this is clipped to
-            zero by the outer's overflow-hidden; at outer-width target it
-            sits inset 8px left/right, 6px top/bottom. */}
         <div
           className="absolute top-[6px] bottom-[6px] left-[8px] right-[8px] rounded-full"
           style={{
@@ -99,21 +84,51 @@ function StatBar() {
 
 export default function Stats() {
   return (
-    <section className="px-[58px] pt-[120px] pb-[120px]">
-      <div className="max-w-[1323px] mx-auto flex flex-col gap-[137px]">
-        {stats.map((stat, i) => (
-          <Reveal
-            key={stat.value}
-            delay={i * 80}
-            className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[470px_1fr] lg:gap-[60px]"
-          >
-            <div className="flex flex-col gap-[42px]">
-              <p className="text-ink text-[76px] leading-none tracking-[-0.02em]">{stat.value}</p>
-              <p className="text-mute text-[14px] leading-[20px]">{stat.label}</p>
+    <section className="relative bg-white px-[58px] py-[120px]">
+      <PlusMarks density="cell" cols={6} rows={4} />
+      <div className="relative mx-auto max-w-[1323px]">
+        <Reveal className="mb-[100px] grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+          <div className="flex flex-col items-start gap-6">
+            <Eyebrow variant="plus">TRACK RECORD</Eyebrow>
+            <h2 className="font-display text-[44px] leading-[1.04] tracking-[-0.024em] text-ink lg:text-[56px]">
+              Twelve years of capital,
+              <br />
+              measured in mandates closed.
+            </h2>
+            <p className="max-w-[420px] text-[14px] leading-[22px] text-ink-soft">
+              Cross-border, cross-instrument, across cycle. The numbers below are the
+              residue of disciplined desk work — not a marketing figure.
+            </p>
+          </div>
+          <div className="relative">
+            <DitheredOrbit cell={4} dot="#0e0d10" accent="#556be6" className="mx-auto max-w-[420px]" />
+            <div
+              className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-ink-soft"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              <span>fig.03 / hubs</span>
+              <span>· 10 nodes · live</span>
             </div>
-            <StatBar />
-          </Reveal>
-        ))}
+          </div>
+        </Reveal>
+
+        <div className="flex flex-col gap-[120px]">
+          {stats.map((stat, i) => (
+            <Reveal
+              key={stat.value}
+              delay={i * 80}
+              className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[470px_1fr] lg:gap-[60px]"
+            >
+              <div className="flex flex-col gap-[42px]">
+                <p className="font-display text-[76px] leading-none tracking-[-0.024em] text-ink">{stat.value}</p>
+                <p className="text-[14px] leading-[20px] text-mute" style={{ fontFamily: 'var(--font-mono)' }}>
+                  {stat.label}
+                </p>
+              </div>
+              <StatBar />
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
