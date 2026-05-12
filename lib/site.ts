@@ -3,7 +3,8 @@ export const siteConfig = {
   url: 'https://capital33.com',
   description:
     'Capital33 is a next-generation merchant bank focused on capital raising and AI-powered direct lending for mid-market and large enterprises.',
-  ogImage: '/opengraph-image.png',
+  // OG image is generated programmatically by app/opengraph-image.tsx.
+  // Next.js auto-injects it into openGraph + twitter metadata.
   email: 'hello@capital33.com',
   careersEmail: 'careers@capital33.com',
   linkedin: 'https://www.linkedin.com/company/c33',
