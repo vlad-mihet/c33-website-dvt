@@ -66,7 +66,8 @@ export default function NewsletterForm({
           type="submit"
           disabled={form.pending}
           aria-busy={form.pending || undefined}
-          className="bg-ink text-white relative inline-flex items-center justify-center gap-2 rounded-full py-[10px] pr-[12px] pl-[20px] text-[12px] transition-colors hover:bg-black disabled:opacity-60 disabled:cursor-not-allowed"
+          className="tx-button bg-ink text-white relative inline-flex items-center justify-center gap-2 rounded-full py-[10px] pr-[12px] pl-[20px] text-[11px] uppercase tracking-[0.18em] hover:bg-black disabled:opacity-60 disabled:cursor-not-allowed"
+          style={{ fontFamily: 'var(--font-mono)' }}
         >
           <span className={`inline-flex items-center gap-2 transition-opacity duration-150 ${form.pending ? 'opacity-0' : 'opacity-100'}`}>
             {cta}

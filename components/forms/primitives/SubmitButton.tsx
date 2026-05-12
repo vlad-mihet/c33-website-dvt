@@ -7,21 +7,27 @@ type SubmitButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> &
   pending?: boolean;
   pendingLabel?: string;
   variant?: SubmitVariant;
-  // Hide the trailing arrow icon (Newsletter pill keeps it; some surfaces
-  // prefer plain).
+  // Hide the trailing arrow icon.
   hideIcon?: boolean;
   children: ReactNode;
 };
 
+// Mono-uppercase pill buttons — same language as the site-wide CTAs. The
+// three variants:
+//   inkOnLight   — primary CTA on white surfaces
+//   whiteOnDark  — primary CTA on the dark form panel / dark slabs
+//   accentOnDark — kept for callers; aliases to whiteOnDark visuals so the
+//                  Guardbase aesthetic stays consistent (periwinkle is for
+//                  accents and headlines, not buttons).
 const variantClass: Record<SubmitVariant, string> = {
   inkOnLight:
-    'bg-[rgba(17,16,18,0.9)] text-white hover:bg-ink ' +
+    'bg-ink text-white hover:bg-black ' +
     'disabled:opacity-60 disabled:cursor-not-allowed',
   whiteOnDark:
-    'bg-white text-ink hover:bg-white/90 ' +
+    'bg-white text-ink hover:bg-white/85 ' +
     'disabled:opacity-60 disabled:cursor-not-allowed',
   accentOnDark:
-    'bg-[#3a59ff] text-white hover:bg-[#2845e8] ' +
+    'bg-white text-ink hover:bg-white/85 ' +
     'disabled:opacity-60 disabled:cursor-not-allowed',
 };
 
@@ -42,9 +48,6 @@ const Spinner = ({ className = '' }: { className?: string }) => (
   </svg>
 );
 
-// Submit button with idle / pending states. Width is locked to its idle size
-// (via min-w from inline measurement is overkill — we pad the label/spinner
-// equivalently so the button doesn't visibly re-flow).
 export default function SubmitButton({
   pending = false,
   pendingLabel = 'Sending…',
@@ -55,12 +58,6 @@ export default function SubmitButton({
   disabled,
   ...rest
 }: SubmitButtonProps) {
-  const arrowColor = variant === 'inkOnLight' || variant === 'accentOnDark' || variant === 'whiteOnDark' ? '' : '';
-  const trailingIconClass =
-    variant === 'whiteOnDark'
-      ? 'text-ink'
-      : 'text-white';
-
   return (
     <button
       {...rest}
@@ -68,12 +65,13 @@ export default function SubmitButton({
       disabled={disabled || pending}
       aria-busy={pending || undefined}
       className={[
-        'relative inline-flex items-center justify-center gap-2 rounded-full whitespace-nowrap',
-        'pr-[13px] pl-[26px] py-[12px] text-[12px]',
-        'transition-colors duration-200',
+        'group tx-button relative inline-flex items-center justify-center gap-2 rounded-full whitespace-nowrap',
+        'pl-[26px] pr-[14px] py-[12px]',
+        'text-[11px] uppercase tracking-[0.18em]',
         variantClass[variant],
         className,
       ].join(' ')}
+      style={{ fontFamily: 'var(--font-mono)' }}
     >
       <span
         className={`inline-flex items-center gap-2 transition-opacity duration-150 ${
@@ -81,7 +79,7 @@ export default function SubmitButton({
         }`}
       >
         {children}
-        {!hideIcon && <ArrowUpRight className={`size-[20px] ${trailingIconClass} ${arrowColor}`} />}
+        {!hideIcon && <ArrowUpRight className="tx-icon size-[18px]" />}
       </span>
       <span
         aria-hidden={!pending}
