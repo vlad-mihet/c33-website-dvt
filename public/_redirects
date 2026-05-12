@@ -1,0 +1,2 @@
+# Cloudflare Pages redirect rules. One rule per line: <from> <to> <status>.
+# Add real redirects here when content moves. Empty by default.

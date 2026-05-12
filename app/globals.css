@@ -1,0 +1,230 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #111012;
+  --color-ink-soft: #6a6a6a;
+  --color-mute: #a2a2a2;
+  --color-mute-2: #a6a6a6;
+  --color-card: #080914;
+  --color-line: #d6d6d6;
+  --color-line-2: #eaeaea;
+  --color-chip: #ededed;
+  --color-num-mute: #dedede;
+  --color-glow: #556be6;
+
+  --font-sans: 'Helvetica Neue', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+html,
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Warp/zoom tunnel effect — radial streaks emanating from center.
+   Uses two stacked radial gradients + a conic for streak texture. */
+.tunnel {
+  background:
+    radial-gradient(
+      ellipse 60% 70% at 50% 50%,
+      rgba(85, 107, 230, 0.55) 0%,
+      rgba(35, 50, 140, 0.35) 18%,
+      rgba(8, 9, 20, 0.95) 55%,
+      #050610 100%
+    ),
+    conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(120, 145, 255, 0.18) 0deg,
+      rgba(8, 9, 20, 0) 8deg,
+      rgba(120, 145, 255, 0.16) 18deg,
+      rgba(8, 9, 20, 0) 26deg,
+      rgba(120, 145, 255, 0.22) 38deg,
+      rgba(8, 9, 20, 0) 50deg,
+      rgba(120, 145, 255, 0.14) 64deg,
+      rgba(8, 9, 20, 0) 78deg,
+      rgba(120, 145, 255, 0.18) 96deg,
+      rgba(8, 9, 20, 0) 110deg,
+      rgba(120, 145, 255, 0.2) 130deg,
+      rgba(8, 9, 20, 0) 146deg,
+      rgba(120, 145, 255, 0.14) 168deg,
+      rgba(8, 9, 20, 0) 182deg,
+      rgba(120, 145, 255, 0.18) 204deg,
+      rgba(8, 9, 20, 0) 220deg,
+      rgba(120, 145, 255, 0.22) 244deg,
+      rgba(8, 9, 20, 0) 260deg,
+      rgba(120, 145, 255, 0.16) 282deg,
+      rgba(8, 9, 20, 0) 298deg,
+      rgba(120, 145, 255, 0.18) 320deg,
+      rgba(8, 9, 20, 0) 338deg,
+      rgba(120, 145, 255, 0.14) 354deg
+    ),
+    #050610;
+}
+
+/* Subtle dotted background for the contact section */
+.dotted-bg {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.18) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Dotted background tinted for dark surfaces (e.g. dark contact panel) */
+.dotted-bg-dark {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+
+/* Tunnel: slow inward zoom + faint streak rotation. */
+.tunnel {
+  animation: tunnel-zoom 18s ease-in-out infinite alternate;
+  transform-origin: 50% 50%;
+}
+
+@keyframes tunnel-zoom {
+  0%   { transform: scale(1);    filter: brightness(1); }
+  100% { transform: scale(1.08); filter: brightness(1.15); }
+}
+
+.tunnel-streaks {
+  animation: tunnel-rotate 60s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes tunnel-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer globe — slow Y-axis spin with a touch of perspective so a flat
+   image reads as a rotating 3D globe. */
+.globe-stage {
+  perspective: 1400px;
+}
+.globe-spin {
+  animation: globe-spin 36s linear infinite;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+@keyframes globe-spin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
+/* Hero halo behind the headline — gentle pulse */
+.hero-halo {
+  animation: hero-halo 8s ease-in-out infinite;
+}
+
+@keyframes hero-halo {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.04); }
+}
+
+/* Reveal-on-scroll utility (paired with intersection observer in client components,
+   or used as a default fade-up for sections). */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section auto-fade-up: applies once per pageload via @starting-style.
+   Falls back gracefully in browsers that don't support it. */
+@supports (transition-behavior: allow-discrete) {
+  .fade-in-section {
+    animation: fade-in-up 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Marquee for the platform "Build for The Split Second Economy" headline. */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Form field micro-interactions. Used by Field/Input/Select/Textarea/SuccessCard. */
+@keyframes field-error-in {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes field-listbox-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes field-success-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes field-success-check {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes field-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes field-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-3px); }
+  40%      { transform: translateX(3px); }
+  60%      { transform: translateX(-2px); }
+  80%      { transform: translateX(2px); }
+}
+
+/* Services page hero — soft blue glow over neutral backdrop */
+.services-hero {
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 25%,
+      rgba(176, 195, 255, 0.55) 0%,
+      rgba(176, 195, 255, 0.25) 35%,
+      rgba(220, 224, 235, 0.15) 60%,
+      rgba(245, 246, 250, 0) 80%
+    ),
+    linear-gradient(180deg, #f3f4f8 0%, #ececef 60%, #d8d9de 100%);
+}
+

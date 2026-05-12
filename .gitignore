@@ -1,0 +1,28 @@
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+.env
+.env.local
+.env.*.local
+
+.wrangler/
+.cloudflare/
+
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.idea/
+.vscode/
+
+# Unused/unlicensed media kept locally but never referenced in code
+/public/assets/0_Blue_Light_1920x1080.mp4
+/public/assets/33 (1).mp4
+/public/assets/GettyImages-1059798924.mp4
